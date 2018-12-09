@@ -7,6 +7,7 @@ import { Container, Header, SongList } from './styles';
 import ClockIcon from '../../aseets/images/clock.svg';
 import PlusIcon from '../../aseets/images/plus.svg';
 import { Creators as PlaylistDetailsActions } from '../../store/ducks/playlistDetails';
+import { Creators as PlayerActions } from '../../store/ducks/player';
 import Loading from '../../components/Loading';
 
 class PlayList extends Component {
@@ -32,6 +33,7 @@ class PlayList extends Component {
         ),
       }),
     }).isRequired,
+    loadSong: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
@@ -42,7 +44,6 @@ class PlayList extends Component {
     if (prevProps.match.params.id !== this.props.match.params.id) {
       this.loadPlayListDetails();
     }
-    console.log(this.props);
   }
 
   loadPlayListDetails = () => {
@@ -87,7 +88,7 @@ class PlayList extends Component {
               </tr>
             ) : (
               playlist.songs.map(song => (
-                <tr key={song.id}>
+                <tr key={song.id} onDoubleClick={() => this.props.loadSong(song)}>
                   <td>
                     <img src={PlusIcon} alt="Adicionar" />
                   </td>
@@ -117,9 +118,10 @@ class PlayList extends Component {
 
 const mapStateToProps = state => ({
   playlistDetails: state.playlistDetails,
+  player: state.player,
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators(PlaylistDetailsActions, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({ ...PlaylistDetailsActions, ...PlayerActions }, dispatch);
 
 export default connect(
   mapStateToProps,
