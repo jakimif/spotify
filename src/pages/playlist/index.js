@@ -42,6 +42,7 @@ class PlayList extends Component {
     if (prevProps.match.params.id !== this.props.match.params.id) {
       this.loadPlayListDetails();
     }
+    console.log(this.props);
   }
 
   loadPlayListDetails = () => {
