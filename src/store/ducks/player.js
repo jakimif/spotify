@@ -11,6 +11,7 @@ export const Types = {
   PLAYING: 'player/PLAYING',
   HANDLE_POSITION: 'player/HANDLE_POSITION',
   SET_POSITION: 'player/SET_POSITION',
+  SET_VOLUME: 'player/SET_VOLUME',
 };
 
 /**
@@ -23,6 +24,7 @@ const INITIAL_STATE = {
   positionShown: null,
   position: null,
   duration: null,
+  volume: 30,
 };
 
 export default function player(state = INITIAL_STATE, action) {
@@ -74,6 +76,8 @@ export default function player(state = INITIAL_STATE, action) {
       return { ...state, positionShown: state.duration * action.payload.percent };
     case Types.SET_POSITION:
       return { ...state, position: state.duration * action.payload.percent, positionShown: null };
+    case Types.SET_VOLUME:
+      return { ...state, volume: action.payload.volume };
     default:
       return state;
   }
@@ -103,5 +107,10 @@ export const Creators = {
   setPositionSong: percent => ({
     type: Types.SET_POSITION,
     payload: { percent },
+  }),
+
+  setVolumeSong: volume => ({
+    type: Types.SET_VOLUME,
+    payload: { volume },
   }),
 };
