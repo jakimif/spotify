@@ -17,7 +17,6 @@ const INITIAL_STATE = {
 export default function player(state = INITIAL_STATE, action) {
   switch (action.type) {
     case Types.LOAD:
-      console.log('Duck song', action);
       return { ...state, currentSong: action.payload.song, status: Sound.status.PLAYING };
     default:
       return state;
