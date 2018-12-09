@@ -1,0 +1,22 @@
+{
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "jest": true
+  },
+  "plugins": ["react", "jsx-a11y", "import"],
+  "extends": "airbnb",
+  "rules": {
+    "react/jsx-filename-extension": [
+      "error",
+      {
+        "extensions": [".js", ".jsx"]
+      }
+    ],
+    "global-require": "off",
+    "no-console": "off",
+    "import/prefer-default-export": "off",
+    "react/destructuring-assignment": "off",
+    "max-len": ["error", { "code": 120, "ignoreUrls": true }]
+  }
+}
