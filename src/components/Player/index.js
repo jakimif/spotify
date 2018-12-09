@@ -20,11 +20,16 @@ import ForwardIcon from '../../aseets/images/forward.svg';
 import RepeatIcon from '../../aseets/images/repeat.svg';
 
 const Player = ({
-  player, playSong, pauseSong, nextSong, prevSong,
+  player, playSong, pauseSong, nextSong, prevSong, playingSong, position, duration,
 }) => (
   <Container>
     {!!player.currentSong && (
-      <Sound url={player.currentSong.file} playStatus={player.status} onFinishedPlaying={nextSong} />
+      <Sound
+        url={player.currentSong.file}
+        playStatus={player.status}
+        onFinishedPlaying={nextSong}
+        onPlaying={playingSong}
+      />
     )}
     <Current>
       {!!player.currentSong && (
@@ -62,7 +67,7 @@ const Player = ({
         </button>
       </Controls>
       <Time>
-        <span>1:39</span>
+        <span>{position}</span>
         <ProgressSlider>
           <Slider
             railStyle={{ background: '#404040', borderRadius: '10' }}
@@ -71,7 +76,7 @@ const Player = ({
             // value={100}
           />
         </ProgressSlider>
-        <span>4:29</span>
+        <span>{duration}</span>
       </Time>
     </Progress>
     <Volume>
@@ -91,6 +96,9 @@ Player.propTypes = {
   pauseSong: PropTypes.func.isRequired,
   nextSong: PropTypes.func.isRequired,
   prevSong: PropTypes.func.isRequired,
+  playingSong: PropTypes.func.isRequired,
+  duration: PropTypes.string.isRequired,
+  position: PropTypes.string.isRequired,
   player: PropTypes.shape({
     currentSong: PropTypes.shape({
       thumbnail: PropTypes.string,
@@ -102,8 +110,17 @@ Player.propTypes = {
   }).isRequired,
 };
 
+function msToTime(duration) {
+  let seconds = parseInt((duration / 1000) % 60, 10);
+  const minutes = parseInt((duration / (1000 * 60)) % 60, 10);
+  seconds = seconds < 10 ? `0${seconds}` : seconds;
+
+  return `${minutes}:${seconds}`;
+}
 const mapStateToProps = state => ({
   player: state.player,
+  position: msToTime(state.player.position),
+  duration: msToTime(state.player.duration),
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(PlayerActions, dispatch);

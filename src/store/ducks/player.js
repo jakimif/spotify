@@ -8,6 +8,7 @@ export const Types = {
   PAUSE: 'player/PAUSE',
   NEXT: 'player/NEXT',
   PREV: 'player/PREV',
+  PLAYING: 'player/PLAYING',
 };
 
 /**
@@ -17,6 +18,8 @@ const INITIAL_STATE = {
   currentSong: null,
   list: [],
   status: Sound.status.PLAYING,
+  position: null,
+  duration: null,
 };
 
 export default function player(state = INITIAL_STATE, action) {
@@ -48,6 +51,13 @@ export default function player(state = INITIAL_STATE, action) {
       }
       return state;
     }
+    case Types.PLAYING:
+      console.log();
+      return {
+        ...state,
+        duration: action.payload.data.duration,
+        position: action.payload.data.position,
+      };
     default:
       return state;
   }
@@ -66,4 +76,9 @@ export const Creators = {
   pauseSong: () => ({ type: Types.PAUSE }),
   nextSong: () => ({ type: Types.NEXT }),
   prevSong: () => ({ type: Types.PREV }),
+
+  playingSong: data => ({
+    type: Types.PLAYING,
+    payload: { data },
+  }),
 };
