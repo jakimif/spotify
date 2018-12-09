@@ -20,7 +20,18 @@ import ForwardIcon from '../../aseets/images/forward.svg';
 import RepeatIcon from '../../aseets/images/repeat.svg';
 
 const Player = ({
-  player, playSong, pauseSong, nextSong, prevSong, playingSong, position, duration,
+  player,
+  playSong,
+  pauseSong,
+  nextSong,
+  prevSong,
+  playingSong,
+  position,
+  duration,
+  handlePositionSong,
+  setPositionSong,
+  positionShown,
+  progress,
 }) => (
   <Container>
     {!!player.currentSong && (
@@ -29,6 +40,7 @@ const Player = ({
         playStatus={player.status}
         onFinishedPlaying={nextSong}
         onPlaying={playingSong}
+        position={player.position}
       />
     )}
     <Current>
@@ -67,13 +79,16 @@ const Player = ({
         </button>
       </Controls>
       <Time>
-        <span>{position}</span>
+        <span>{positionShown || position}</span>
         <ProgressSlider>
           <Slider
             railStyle={{ background: '#404040', borderRadius: '10' }}
             trackStyle={{ background: '#1ED760' }}
             handleStyle={{ border: '0' }}
-            // value={100}
+            max={1000}
+            onChange={value => handlePositionSong(value / 1000)}
+            onAfterChange={value => setPositionSong(value / 1000)}
+            value={progress}
           />
         </ProgressSlider>
         <span>{duration}</span>
@@ -85,7 +100,7 @@ const Player = ({
         railStyle={{ background: '#404040', borderRadius: '10' }}
         trackStyle={{ background: '#FFF' }}
         handleStyle={{ display: 'none' }}
-        value={100}
+        value={30}
       />
     </Volume>
   </Container>
@@ -99,6 +114,10 @@ Player.propTypes = {
   playingSong: PropTypes.func.isRequired,
   duration: PropTypes.string.isRequired,
   position: PropTypes.string.isRequired,
+  handlePositionSong: PropTypes.func.isRequired,
+  setPositionSong: PropTypes.func.isRequired,
+  positionShown: PropTypes.string.isRequired,
+  progress: PropTypes.number.isRequired,
   player: PropTypes.shape({
     currentSong: PropTypes.shape({
       thumbnail: PropTypes.string,
@@ -111,6 +130,8 @@ Player.propTypes = {
 };
 
 function msToTime(duration) {
+  if (!duration) return '';
+
   let seconds = parseInt((duration / 1000) % 60, 10);
   const minutes = parseInt((duration / (1000 * 60)) % 60, 10);
   seconds = seconds < 10 ? `0${seconds}` : seconds;
@@ -121,6 +142,8 @@ const mapStateToProps = state => ({
   player: state.player,
   position: msToTime(state.player.position),
   duration: msToTime(state.player.duration),
+  positionShown: msToTime(state.player.positionShown),
+  progress: parseInt((state.player.positionShown || state.player.position) * (1000 / state.player.duration), 10),
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators(PlayerActions, dispatch);

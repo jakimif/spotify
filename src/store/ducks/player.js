@@ -9,6 +9,8 @@ export const Types = {
   NEXT: 'player/NEXT',
   PREV: 'player/PREV',
   PLAYING: 'player/PLAYING',
+  HANDLE_POSITION: 'player/HANDLE_POSITION',
+  SET_POSITION: 'player/SET_POSITION',
 };
 
 /**
@@ -18,6 +20,7 @@ const INITIAL_STATE = {
   currentSong: null,
   list: [],
   status: Sound.status.PLAYING,
+  positionShown: null,
   position: null,
   duration: null,
 };
@@ -39,7 +42,12 @@ export default function player(state = INITIAL_STATE, action) {
       const currentIndex = state.list.findIndex(song => song.id === state.currentSong.id);
       const next = state.list[currentIndex + 1];
       if (next) {
-        return { ...state, currentSong: next, status: Sound.status.PLAYING };
+        return {
+          ...state,
+          position: null,
+          currentSong: next,
+          status: Sound.status.PLAYING,
+        };
       }
       return state;
     }
@@ -47,17 +55,25 @@ export default function player(state = INITIAL_STATE, action) {
       const currentIndex = state.list.findIndex(song => song.id === state.currentSong.id);
       const prev = state.list[currentIndex - 1];
       if (prev) {
-        return { ...state, currentSong: prev, status: Sound.status.PLAYING };
+        return {
+          ...state,
+          position: null,
+          currentSong: prev,
+          status: Sound.status.PLAYING,
+        };
       }
       return state;
     }
     case Types.PLAYING:
-      console.log();
       return {
         ...state,
         duration: action.payload.data.duration,
         position: action.payload.data.position,
       };
+    case Types.HANDLE_POSITION:
+      return { ...state, positionShown: state.duration * action.payload.percent };
+    case Types.SET_POSITION:
+      return { ...state, position: state.duration * action.payload.percent, positionShown: null };
     default:
       return state;
   }
@@ -76,9 +92,16 @@ export const Creators = {
   pauseSong: () => ({ type: Types.PAUSE }),
   nextSong: () => ({ type: Types.NEXT }),
   prevSong: () => ({ type: Types.PREV }),
-
   playingSong: data => ({
     type: Types.PLAYING,
     payload: { data },
+  }),
+  handlePositionSong: percent => ({
+    type: Types.HANDLE_POSITION,
+    payload: { percent },
+  }),
+  setPositionSong: percent => ({
+    type: Types.SET_POSITION,
+    payload: { percent },
   }),
 };
