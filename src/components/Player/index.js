@@ -15,13 +15,17 @@ import VolumeIcon from '../../aseets/images/volume.svg';
 import ShuffleIcon from '../../aseets/images/shuffle.svg';
 import PlayIcon from '../../aseets/images/play.svg';
 import PauseIcon from '../../aseets/images/pause.svg';
+import BackwardIcon from '../../aseets/images/backward.svg';
 import ForwardIcon from '../../aseets/images/forward.svg';
 import RepeatIcon from '../../aseets/images/repeat.svg';
 
-const Player = ({ player, playSong, pauseSong }) => (
+const Player = ({
+  player, playSong, pauseSong, nextSong, prevSong,
+}) => (
   <Container>
-    {!!player.currentSong && <Sound url={player.currentSong.file} playStatus={player.status} />}
-
+    {!!player.currentSong && (
+      <Sound url={player.currentSong.file} playStatus={player.status} onFinishedPlaying={nextSong} />
+    )}
     <Current>
       {!!player.currentSong && (
         <>
@@ -38,6 +42,9 @@ const Player = ({ player, playSong, pauseSong }) => (
         <button type="button">
           <img src={ShuffleIcon} alt="ShuffleIcon" />
         </button>
+        <button type="button" onClick={prevSong}>
+          <img src={BackwardIcon} alt="BackwardIcon" />
+        </button>
         {!!player.currentSong && player.status === Sound.status.PLAYING ? (
           <button type="button" onClick={pauseSong}>
             <img src={PauseIcon} alt="PauseIcon" />
@@ -47,7 +54,7 @@ const Player = ({ player, playSong, pauseSong }) => (
             <img src={PlayIcon} alt="PlayIcon" />
           </button>
         )}
-        <button type="button">
+        <button type="button" onClick={nextSong}>
           <img src={ForwardIcon} alt="ForwardIcon" />
         </button>
         <button type="button">
@@ -82,6 +89,8 @@ const Player = ({ player, playSong, pauseSong }) => (
 Player.propTypes = {
   playSong: PropTypes.func.isRequired,
   pauseSong: PropTypes.func.isRequired,
+  nextSong: PropTypes.func.isRequired,
+  prevSong: PropTypes.func.isRequired,
   player: PropTypes.shape({
     currentSong: PropTypes.shape({
       thumbnail: PropTypes.string,
